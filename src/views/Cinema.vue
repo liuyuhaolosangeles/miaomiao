@@ -2,13 +2,14 @@
     <div>
         <Header title="喵喵影院"/>
         <div id="content">
-            <div class="city_switch">
-                全城 
-            </div>
-            <div class="brand_switch">品牌
+            <div class="cinema_menu">
+                <div class="city_switch">
+                    全城 
+                </div>
+                <div class="brand_switch">品牌
 
-            </div>
-            <div class="feature_switch">特色</div>
+                </div>
+            <div class="feature_switch">特色</div></div>
             <Clist />
         </div>
         <TabBar />
@@ -30,6 +31,14 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style  scoped>
+#content .cinema_menu{
+    width :100%;
+    height: 45px;
+    border-bottom: 1px solid #e6e6e6;display: flex;
+    align-items: center;
+    background: white;
+    justify-content: space-around
+}
 
 </style>

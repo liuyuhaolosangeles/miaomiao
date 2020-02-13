@@ -7,7 +7,7 @@
             <router-link tag="li" to="/cinema" >
                 <p>影院</p>
             </router-link >
-            <router-link tag="li" to="mine">
+            <router-link tag="li" to="/mine">
                 <p>我的</p>
             </router-link>
         </ul>
@@ -27,7 +27,8 @@ export default {
     border-top:2px #ebe8e3 solid;
     position: fixed;
     left: 0;
-    bottom: 15px;
+    bottom: 0;
+    z-index: 99;
 
 }
 
@@ -40,8 +41,9 @@ export default {
 
 #footer ul li{
     flex:1;
-    height: 40px;
+ 
     list-style: none;
+    
 }
 
 #footer ul li.router-link-active{
@@ -50,6 +52,6 @@ export default {
 #footer ul p{
     font-size: 12px;
     line-height: 0px;
-
+    cursor: pointer;
 }
 </style>

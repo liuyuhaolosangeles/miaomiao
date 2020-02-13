@@ -55,4 +55,64 @@ export default {
     color : skyblue;
     border-bottom: 2px skyblue;
 }
+#content{
+    flex: 1;
+    overflow: auto;
+    margin-bottom: 50px;
+    position: relative;
+    display: flex;
+    flex-direction: row
+}
+#content .movie_menu{
+    width: 100%;
+    height:45px;
+    border-bottom: 1px solid #e6e6e6;
+    display: flex;
+    overflow: hidden;
+    justify-content: space-around
+}
+.movie_menu .city_name{
+    margin-left: 20px;
+    height:100%;
+    line-height: 45px
+}
+
+.movie_menu .city_name.active{
+    color:#ef4238 ; border-bottom: 2px #ef4238 solid;
+
+}
+.movie_menu .hot_switch{
+    display: flex;
+    height: 100%;
+    line-height: 45px;
+    margin-left: 45px;
+}
+
+.movie_menu .hot_item{
+    font-size: 15px;
+    color: #666;
+    width: 80px;
+    text-align: center;
+    margin: 0 40px
+}
+.movie_menu .hot_item.active{
+    color:  #ef4238;
+    border-bottom: 2px #ef4238 solid;
+    
+}
+.search_entry{
+    margin-right: 20px;
+    height: 100%;
+    line-height: 45px;
+    margin-left: 65px;
+    float: right;
+}
+.search_entry.active{
+    color :#ef4238;
+    border-bottom: 2px  #ef4238 solid;
+}
+.search_entry i{
+    font-size: 24px;
+    color: red;
+}
 </style>
