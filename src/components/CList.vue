@@ -1,42 +1,25 @@
 <template>
     <div class="cinema_body"> 
         <ul>
-            <li>
+            <li v-for="item in text.cinemas" :key="item.id">
                 <div>
-                    <span>大地影院</span>
-                    <span class="q"><span class="price">22.9</span>元起</span>
+                    <span>{{item.nm}}</span>
+                    <span class="q"><span class="price">{{item.sellPrice}}</span>元起</span>
 
                 </div>
                 <div class="address">
                     <span>
-                        荆州世纪初三楼
+                      {{item.addr}}
                     </span>
-                    <span>1863.6666km</span>
+                    <span>{{item.distance}}</span>
                 </div>
                 <div class="card">
-                    <div>小吃</div>
+                    <div v-for="(num,key) in item.tag" v-if="num === 1" :key="key" :class="key|classCard">{{ key|formatCard }}</div>
 
-                    <div>折扣卡</div>
+     
                 </div>
             </li>
-            <li>
-                <div>
-                    <span>大地影院</span>
-                    <span class="q"><span class="price">22.9</span>元起</span>
-
-                </div>
-                <div class="address">
-                    <span>
-                        荆州世纪初三楼
-                    </span>
-                    <span>1863.6666km</span>
-                </div>
-                <div class="card">
-                    <div>小吃</div>
-
-                    <div>折扣卡</div>
-                </div>
-            </li>
+           
             
         </ul>
     </div>
@@ -44,12 +27,122 @@
 
 <script>
 export default {
-    name:'CList'
+    name:'CList',
+    data(){
+        return{
+            CList:[],
+            text:{
+                "msg":"ok",
+                "status":0,
+                "cinemas":[
+                    {
+                        "nm":"JJA九全嘉",
+                        "sellPrice":18,
+                        "addr":"江夏区",
+                        "distance":"12KM",
+                        "tag":{
+                            "allowRefund":1,
+                            "buyout":0,
+                            "cityCardTag":1,
+                            "deal":0,
+                            "endorse":1,
+                            "hallTypeVoList":[],
+                            "sell":1,
+                            "mark":1,
+                            "vipTag":"折扣卡"
+
+                        }
+                    }
+                ]
+
+            }
+                
+
+            
+        }
+        
+    },
+    mounted(){
+        console.log(this.text.cinemas)
+        var CList = window.localStorage.getItem('CList')
+        if(CList){
+            this.CList = JSON.parse(CList);
+        }
+        else{
+             this.axios.get('/api/cinemaList?cityId=10').then((res)=>{
+                var msg = res.data.msg
+                if(msg ==='ok'){
+                    this.CList = res.data.data.cinemas
+                     console.log(this.CList)
+            }
+        })
+
+   
+        }
+    },
+    filters:{
+        formatCard(key){
+            var card = [
+                {
+                    key:'allowRefund',value:'改签'
+                },
+                {
+                     key:'endorse',value:'退'
+                },
+                {
+                     key:'sell',value:'折扣卡'
+                },
+                {
+                     key:'mark',value:'小吃'
+                },
+                {
+                     key:'cityCardTag',value:'公交'
+                },
+
+            ]
+            for(var i=0;i<card.length;i++){
+                if(card[i].key === key)
+                {
+                    return card[i].value
+                }
+            }
+            return ''
+        },
+        classCard(key){
+            var card = [
+                {
+                    key:'allowRefund',value:'bl'
+                },
+                {
+                     key:'endorse',value:'bl'
+                },
+                {
+                     key:'sell',value:'or'
+                },
+                {
+                     key:'mark',value:'or'
+                },
+                {
+                     key:'cityCardTag',value:'bl'
+                },
+
+            ]
+            for(var i=0;i<card.length;i++){
+                if(card[i].key === key)
+                {
+                    return card[i].value
+                }
+            }
+            return ''
+
+        }
+
+    }
 }
 </script>
 
 <style scoped>
-#content .cinema_body{
+s .cinema_body{
     flex: 1;
     overflow: auto;
 }
@@ -80,6 +173,11 @@ export default {
 .cinema_body .address span:nth-of-type(2){
     float: right;
 }
+.cinema_body .card{
+    display: flex;
+    
+}
+    
 .cinema_body .card div{
     padding: 0 3px;
     height: 15px;
@@ -89,7 +187,12 @@ export default {
     border: 1px solid #f90;
         width: 34px;
     font-size: 10px;
+   
 }
+.cinema_body .card div:not(:first-child){
+     margin-left: 5px;
+}
+
 .cinema_body .card div.or{
     color: #f90;
     border: 1px solid #f90
@@ -98,4 +201,6 @@ export default {
         color: #589daf;
     border: 1px solid #589daf
 }
+
+
 </style>
