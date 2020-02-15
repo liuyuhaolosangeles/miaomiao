@@ -1,31 +1,36 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-            <div class="city_hot">
-                <h2>热门城市</h2>
-                <ul class="clearfix">
-                    <li v-for="item in hotlist" :key="item.id">{{item.nm}}</li>
-                  
-                </ul>
-            </div>
-            <div class="city_sort" ref="city_sort">
-                        <div v-for="item in cityList" :key="item.id">
-                            <h2>{{item.index}}</h2>
-                            <ul>
-                                <li v-for="itemList in item.list" :key="itemList.id">{{itemList.nm}}</li>
-                            </ul>
-                        </div>
-
+            <Scroller ref="city_List" :handToScroll="handToScroll" :handToTouchEnd="handToTouchEnd">   
+            <div>
+                <li>{{pullDown}}</li>
+                <div class="city_hot">
+                    <h2>热门城市</h2>
+                    <ul class="clearfix">
+                        <li v-for="item in hotlist" :key="item.id">{{item.nm}}</li>
+                    
+                    </ul>
                 </div>
+                <div class="city_sort" ref="city_sort">
+                            <div v-for="item in cityList" :key="item.id">
+                                <h2>{{item.index}}</h2>
+                                <ul>
+                                    <li v-for="itemList in item.list" :key="itemList.id">{{itemList.nm}}</li>
+                                </ul>
+                            </div>
 
+                </div>                
             </div>
+            </Scroller>
+
+        </div>
             <div class="city_index">
                     <ul>
                         <li v-for="(item,index) in cityList" :key="item.id" @click="handToIndex(index)">{{item.index}}</li>
                   
                     </ul>
             </div>
-        </div>
+    </div>
     
    
 
@@ -42,7 +47,8 @@ export default {
     data(){
         return{
             cityList : [],//首字母索引数组
-            hotlist : []
+            hotlist : [],
+            pullDown:''
         }
     },
     mounted(){
@@ -128,7 +134,32 @@ export default {
         },
         handToIndex(index){//跳转
             var h2 = this.$refs.city_sort.getElementsByTagName('h2')
-            this.$refs.city_sort.parentNode.scrollTop=h2[index].offsetTop
+            // this.$refs.city_sort.parentNode.scrollTop=h2[index].offsetTop
+            this.$refs.city_List.handToScrollTop(-h2[index].offsetTop)//利用better-scroll实现跳转
+       },
+         handToScroll(pos){
+            if(pos.y>30){
+                this.pullDown='正在更新中.....'
+                // console.log('111')
+                }
+
+        },
+        handToTouchEnd(pos){
+            if(pos.y>30){
+                this.axios.get('/api/movieOnInfoList?cityId=10').then((res)=>{
+                    var msg = res.data.msg
+                    if(msg ==='ok'){
+                        this.pullDown='更新成功'
+                        setTimeout(()=>{
+                            this.movieList = res.data.data.movieList
+                            this.pullDown = ''
+                        },1000)
+                                                
+                    }
+                                        
+                })
+                            
+            }
         }
     }
 

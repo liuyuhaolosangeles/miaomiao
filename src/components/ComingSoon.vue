@@ -60,7 +60,7 @@ export default {
     flex:1;
     overflow: auto;
     margin-top: -50px;
-    padding-bottom: 60px
+    margin-bottom: 60px
     
 }
 .movie_body ul {

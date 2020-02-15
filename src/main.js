@@ -10,6 +10,7 @@ Vue.config.productionTip = false
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import Scroller from './components/Scroller'
 Vue.use(ElementUI)
 
 // 函数全局定义
@@ -33,7 +34,7 @@ Vue.prototype.countDown = function (){
 Vue.filter('setwh',(url,arg)=>{
   return url.replace(/w\.h/,arg)
 })
-
+Vue.component('Scroller',Scroller)
 
 new Vue({
   router,

@@ -3,19 +3,19 @@
         <div class="search_input">
             <div class="search_input_wrapper">
                 <i class="icon iconfont icon-sousu"></i>
-                <input type="text">
+                <input type="text" v-model="message">
             </div>
         </div>
         <div class="search_result">
             <h3>电影</h3>
             <ul>
-                <li>
-                    <div class="img"></div>
+                <li v-for="item in movieList" :key="item.id">
+                    <div class="img"><img :src="item.img|setwh('128.180')" alt=""></div>
                     <div class="info">
-                        <p><span>无名之辈</span><span>8.25</span></p>
-                        <p>A cool fish</p>
-                        <p>剧情，喜剧，犯罪</p>
-                        <p>2018-11-16</p>
+                        <p><span>{{item.nm}}</span><span>{{item.sc}}</span></p>
+                        <p>{{item.enm}}</p>
+                        <p>{{item.cat}}</p>
+                        <p>{{item.rt}}</p>
                     </div>
                 </li>
             </ul>
@@ -25,20 +25,59 @@
 </template>
 <script>
 export default {
-    name:"Search"
+    name:"Search",
+    data(){
+        return {
+            message:'',
+            movieList:[],
+        }
+    },
+    watch:{
+        message(newVal){
+            // console.log(newVal)
+            // clearTimeout()
+            // setTimeout()
+            var that = this
+            this.cancelRequest()
+            this.axios.get('/api/searchList?cityId=10&kw='+newVal,{
+                cancelToken:new this.axios.CancelToken(function(c) {
+                    that.source = c;
+             })
+            }).then((res)=>{
+                var msg = res.data.msg
+                var movies = res.data.data.movies
+                // console.log(movies)
+                if(msg && movies){
+                    this.movieList = res.data.data.movies.list
+                }
+            }).catch((err) => {
+                if (this.axios.isCancel(err)) {
+                    console.log('Rquest canceled', err.message); //请求如果被取消，这里是返回取消的message
+                } else {
+                    //handle error
+                    console.log(err);
+                }
+            })       
+        }
+        },
+    
+    methods:{
+        cancelRequest(){
+            if(typeof this.source ==='function'){
+                this.source('终止请求')
+            }
+        }
+    }
+
 }
 </script>
 <style scoped>
-#content {
-    flex: 1;
-    overflow: auto;
-    margin-bottom: 50px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+.search_body {
+  margin-bottom: 60px
+    
 }
-#content .movie_menu {
-    width: 100%;
+.movie_menu {
+    width: 250px;
     height: 45px;
     border-bottom: 1px solid #e6e6e6;
     display: -webkit-box;
@@ -54,11 +93,54 @@ export default {
     z-index: 10;
 }
 
+.search_body .search_result .img {
+    width: 60px;
+    float: left;
+}
+.search_body .search_result .info {
+    float: left;
+    margin-left: 15px;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.search_body .search_result .img img {
+    width: 100%;
+}
+.search_body .search_result li {
+    border-bottom: 1px dashed #c9c9c9;
+    padding: 5px ;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-left: -25px;
+}
+
+.search_body .search_result h3 {
+    font-size: 15px;
+    color: #999;
+    padding: 9px 15px;
+    border-bottom: 1px solid #e6e6e6;
+    padding-top: 0;
+}
+
 #content .search_body {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     overflow: auto;
+}
+ul, menu, dir {
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
 }
 
 .search_body .search_input {
