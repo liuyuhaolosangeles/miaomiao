@@ -1,13 +1,14 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-            <Scroller ref="city_List" :handToScroll="handToScroll" :handToTouchEnd="handToTouchEnd">   
+            <Loading v-if="isLoading" />
+            <Scroller v-else ref="city_List" :handToScroll="handToScroll" :handToTouchEnd="handToTouchEnd">   
             <div>
                 <li>{{pullDown}}</li>
                 <div class="city_hot">
                     <h2>热门城市</h2>
                     <ul class="clearfix">
-                        <li v-for="item in hotlist" :key="item.id">{{item.nm}}</li>
+                        <li v-for="item in hotlist" :key="item.id" @tap="handToCity(item.nm,item.id)">{{item.nm}}</li>
                     
                     </ul>
                 </div>
@@ -15,7 +16,7 @@
                             <div v-for="item in cityList" :key="item.id">
                                 <h2>{{item.index}}</h2>
                                 <ul>
-                                    <li v-for="itemList in item.list" :key="itemList.id">{{itemList.nm}}</li>
+                                    <li v-for="itemList in item.list" :key="itemList.id" @tap="handToCity(itemList.nm,itemList.id)">{{itemList.nm}}</li>
                                 </ul>
                             </div>
 
@@ -48,28 +49,33 @@ export default {
         return{
             cityList : [],//首字母索引数组
             hotlist : [],
-            pullDown:''
+            pullDown:'',
+            isLoading : true
         }
     },
     mounted(){
 
         var cityList = window.localStorage.getItem('cityList');
-        var hotList = window.localStorage.getItem('hotList');
+        var hotList = window.localStorage.getItem('hotlist');
  
         if(cityList && hotList){
             this.cityList = JSON.parse(cityList);
-            this.hotList = JSON.parse(hotList);
+            this.hotList = JSON.parse(hotlist);
+            this.isLoading = false
         }
 
         else{
             this.axios.get('/api/cityList').then((res)=>{
                         var msg = res.data.msg
                         if(msg === 'ok'){
+                            this.isLoading = false
                             var cities = res.data.data.cities
                             // console.log(cities)
                             var {cityList , hotlist} = this.formatCityList(cities)
                             this.cityList = cityList
                             this.hotlist = hotlist
+                            window.localStorage.setItem('cityList' , JSON.stringify(cityList))
+                            window.localStorage.setItem('hotList' , JSON.stringify(hotlist))
                             
                         }
                     })
@@ -160,6 +166,12 @@ export default {
                 })
                             
             }
+        },
+        handToCity(nm,id){
+            this.$store.commit('city/CITY_INFO',{nm , id})
+            this.$router.push('/movie/NowPlaying')
+            window.localStorage.setItem('nownm',nm)
+            window.localStorage.setItem('nowid',id)
         }
     }
 

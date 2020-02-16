@@ -7,13 +7,27 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1329044_a1xtqwv5re.css">
     <link rel="stylesheet" href="<%= BASE_URL %>css/main.css">
+    <link rel="stylesheet" href="<%= BASE_URL %>css/iconfont.css">
     <title>miaomiao</title>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but miaomiao doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <style>
+      #app #a{
+        display: flex;
+        height: 100%;
+ 
+      }
+      #app .wait{
+        margin: auto;
+      }
+    </style>
+    <div id="app">
+      <div id="a"> <div class="wait">喵喵网努力加载中。。。。</div></div>
+     
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

@@ -34,7 +34,10 @@ Vue.prototype.countDown = function (){
 Vue.filter('setwh',(url,arg)=>{
   return url.replace(/w\.h/,arg)
 })
-Vue.component('Scroller',Scroller)
+Vue.component('Scroller',Scroller)//全局组件
+
+import Loading from './components/Loading'
+Vue.component('Loading',Loading)
 
 new Vue({
   router,

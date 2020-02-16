@@ -4,7 +4,7 @@
         <div id="content">
             <div class="movie_menu">
                 <router-link class="city_name" tag="div" to="/movie/city">
-                    <span>潜江</span>
+                    <span>{{$store.state.city.nm}}</span>
                 </router-link>
                 <div class="hot_switch" >
                     <router-link class="hot_item " tag="div" to="/movie/NowPlaying">正在热映</router-link>
@@ -18,12 +18,14 @@
                 
             </div>
         </div>
-        <TabBar />
+       
 
         <keep-alive>
             <router-view />
 
         </keep-alive>
+         <TabBar />
+         <router-view name="detail" />
     </div>
 </template>
 
@@ -38,6 +40,21 @@ export default {
         Header,
         TabBar,
  
+    },
+    mounted(){
+      
+        this.axios.get('/api/getLocation').then((res)=>{
+            var msg = res.data.msg
+            if(msg === 'ok'){
+                console.log(res.data.data)
+        //         var nm = res.data.data.nm
+        //         var id = res.data.data.id
+        //         if(this.$store.state.city.id ==id){return ;}
+        //         window.localStorage.setItem('nownm',nm)
+        //         window.localStorage.setItem('nowid',id)
+        //         window.location.reload()
+            }
+        })
     }
 }
 </script>
@@ -68,11 +85,11 @@ export default {
     height:45px;
     border-bottom: 1px solid #e6e6e6;
     display: flex;
-    overflow: hidden;
+    overflow: auto;
     justify-content: space-around
 }
 .movie_menu .city_name{
-    margin-left: 20px;
+    margin-left: 0px;
     height:100%;
     line-height: 45px
 }
@@ -85,7 +102,7 @@ export default {
     display: flex;
     height: 100%;
     line-height: 45px;
-    margin-left: 45px;
+
 }
 
 .movie_menu .hot_item{
@@ -93,7 +110,7 @@ export default {
     color: #666;
     width: 80px;
     text-align: center;
-    margin: 0 40px
+    margin: 0 4px
 }
 .movie_menu .hot_item.active{
     color:  #ef4238;
@@ -101,10 +118,10 @@ export default {
     
 }
 .search_entry{
-    margin-right: 20px;
+
     height: 100%;
     line-height: 45px;
-    margin-left: 65px;
+
     float: right;
 }
 .search_entry.active{

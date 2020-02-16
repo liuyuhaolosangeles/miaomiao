@@ -9,10 +9,10 @@
         <div class="search_result">
             <h3>电影</h3>
             <ul>
-                <li v-for="item in movieList" :key="item.id">
-                    <div class="img"><img :src="item.img|setwh('128.180')" alt=""></div>
-                    <div class="info">
-                        <p><span>{{item.nm}}</span><span>{{item.sc}}</span></p>
+                <li v-for="item in movieList" :key="item.id" @click="handTodetail(item.id)">
+                    <div class="img"><img :src="item.img|setwh('128.180')" alt="" ></div>
+                    <div class="info" >
+                        <p ><span>{{item.nm}}</span><span>{{item.sc}}</span></p>
                         <p>{{item.enm}}</p>
                         <p>{{item.cat}}</p>
                         <p>{{item.rt}}</p>
@@ -38,8 +38,9 @@ export default {
             // clearTimeout()
             // setTimeout()
             var that = this
+            var cityId = this.$store.state.city.id
             this.cancelRequest()
-            this.axios.get('/api/searchList?cityId=10&kw='+newVal,{
+            this.axios.get('/api/searchList?cityId='+cityId+'&kw='+newVal,{
                 cancelToken:new this.axios.CancelToken(function(c) {
                     that.source = c;
              })
@@ -66,6 +67,10 @@ export default {
             if(typeof this.source ==='function'){
                 this.source('终止请求')
             }
+        },
+        handTodetail(movieId){
+              this.$router.push('/movie/detail/2/'+movieId)
+            // console.log(movieId)
         }
     }
 

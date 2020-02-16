@@ -1,15 +1,16 @@
 <template>
     <div class="movie_body" ref="movie_body">
-        <Scroller :handToScroll="handToScroll" :handToTouchEnd="handToTouchEnd">   
+        <Loading v-if="isLoading" />
+        <Scroller  :handToScroll="handToScroll" :handToTouchEnd="handToTouchEnd">   
                 
 
                 <ul>
                     <li class="pullDown">{{pullDown}}</li>
                   
                     <li v-for="item in movieList" :key="item.id">
-                        <div class="pic_show" @tap="handToDetail"><img :src="item.img|setwh('128.180')" alt=""></div>
+                        <div class="pic_show" @tap="handToDetail(item.id)"><img :src="item.img|setwh('128.180')" alt=""></div>
                         <div class="info_list">
-                            <h2>
+                            <h2 @tap="handToDetail(item.id)">
                             {{item.nm}}    <img v-if="item.version" src="@/assets/3dmaxs.png">
                             </h2>
                         
@@ -39,30 +40,34 @@ export default {
     data(){
         return {
             movieList:[],
-            pullDown:''
+            pullDown:'',
+            isLoading:true,
+            prevCityId : -1
         }
     },
-    mounted(){
-        var movieList = window.localStorage.getItem('movieList')
-        if(movieList){
-            this.movieList = JSON.parse(movieList);
-        }
-        else{
-             this.axios.get('/api/movieOnInfoList?cityId=10').then((res)=>{
-                var msg = res.data.msg
-                if(msg ==='ok'){
-                    this.movieList = res.data.data.movieList
-                    
+    activated(){//activated渲染一次页面调用一次 mounted是打开页面刷新一次
+        var cityId = this.$store.state.city.id
+        if(cityId === this.prevCityId){return} //当城市没有改变时 return 城市改变时进行下面axios操作
+        this.isLoading = true
+        console.log('nowPlaying')
+        this.axios.get('/api/movieOnInfoList?cityId=' + cityId).then((res)=>{
+            var msg = res.data.msg
+            if(msg ==='ok'){
+                this.movieList = res.data.data.movieList
+                this.isLoading = false
+                this.prevCityId = cityId
             }
+
+            
         })
 
    
-        }
+        
        
     },
     methods:{
-        handToDetail(){
-            console.log('11')
+        handToDetail(movieId){
+            this.$router.push('/movie/detail/1/'+movieId)
         },
         handToScroll(pos){
             if(pos.y>30){
