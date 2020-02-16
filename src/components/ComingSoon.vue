@@ -1,8 +1,9 @@
 <template>
     <div class="movie_body">
-        <ul>
+        <Loading v-if="isLoading" />
+        <ul v-else>
             <li v-for="item in comingSoonList" :key="item.id">
-                <div class="pic_show"><img :src="item.img|width('128.180')" alt=""></div>
+                <div class="pic_show"><img :src="item.img|setwh('128.180')" alt=""></div>
                 <div class="info_list">
                     <h2>
                         {{item.nm}}
@@ -28,20 +29,28 @@ export default {
     name:"ComingSoon",
     data(){
         return{
-            comingSoonList:[]
+            comingSoonList:[],
+            isLoading:true,
+            prevCityId : -1
         }
     },
-    mounted(){
+    activated(){
         var comingSoonList = window.localStorage.getItem('comingSoonList')
         if(comingSoonList){
             this.comingSoonList = JSON.parse(comingSoonList);
         }
         else{
-             this.axios.get('/api/movieComingList?cityId=10').then((res)=>{
+            var cityId = this.$store.state.city.id
+            if(this.prevCityId === cityId){return}
+             this.isLoading = true
+            console.log('commingSoon')
+            this.axios.get('/api/movieComingList?cityId=' + cityId).then((res)=>{
                 var msg = res.data.msg
                 if(msg ==='ok'){
                     this.comingSoonList = res.data.data.comingSoonList
                     //  console.log(this.movieList)
+                    this.isLoading = false
+                    this.prevCityId =cityId
             }
         })
 

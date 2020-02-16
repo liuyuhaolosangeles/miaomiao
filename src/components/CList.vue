@@ -1,7 +1,8 @@
 <template>
     <div class="cinema_body"> 
-        <ul>
-            <li v-for="item in text.cinemas" :key="item.id">
+        <Loading v-if="isLoading" />
+        <ul v-else>
+            <li v-for="item in CList" :key="item.id">
                 <div>
                     <span>{{item.nm}}</span>
                     <span class="q"><span class="price">{{item.sellPrice}}</span>元起</span>
@@ -31,6 +32,8 @@ export default {
     data(){
         return{
             CList:[],
+            isLoading:true,
+            prevCityId :-1,
             text:{
                 "msg":"ok",
                 "status":0,
@@ -62,23 +65,30 @@ export default {
         }
         
     },
-    mounted(){
-        console.log(this.text.cinemas)
-        var CList = window.localStorage.getItem('CList')
-        if(CList){
-            this.CList = JSON.parse(CList);
-        }
-        else{
-             this.axios.get('/api/cinemaList?cityId=10').then((res)=>{
+    activated(){
+    
+        // var CList = window.localStorage.getItem('CList')
+        // if(CList){
+        //     this.CList = JSON.parse(CList);
+        //     this.isLoading = false
+        // }
+        // else{
+            var cityId = this.$store.state.city.id
+            if(this.prevCityId === cityId){return}
+            this.isLoading = true
+            console.log('cinema')
+             this.axios.get('/api/cinemaList?cityId='+cityId).then((res)=>{
                 var msg = res.data.msg
                 if(msg ==='ok'){
+                    this.isLoading = false
                     this.CList = res.data.data.cinemas
-                     console.log(this.CList)
-            }
+                    this.prevCityId = cityId
+                    window.localStorage.setItem('CList' ,JSON.stringify(this.text) )
+            }  
         })
 
    
-        }
+        // }
     },
     filters:{
         formatCard(key){
